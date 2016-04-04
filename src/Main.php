@@ -20,10 +20,10 @@ class Main extends PluginBase implements Listener{
     }
     
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
-        if(strtolower($command->getName()) == 'revive'){
-        if(count($args) > 0){
-            $player = $args[0];
-            if($this->getServer()->getPlayer($player)){
+        if(strtolower($command->getName()) === 'revive'){ // 3 = for strings better practice
+        if(isset($args[0])){ //better way to check 
+            $player = $this->getServer()->getPlayer($args[0]);
+            if($player instanceof Player){ //checks if its a actual player
                 $player = $this->getServer()->getPlayer($player);
                 $player->setHealth(10);
                 $sender->sendMessage(COLOR::BLUE."Player ".$player->getName()."has been revived!");
@@ -35,11 +35,13 @@ class Main extends PluginBase implements Listener{
                 return;   
             }
         } else {
-            $sender->setHealth(10);
-            $sender->sendMessage(Color::GREEN."You have been revived");
+            if ($sender instanceof Player){ //checks if sender is a player
+                $sender->setHealth(10);
+                $sender->sendMessage(Color::GREEN."You have been revived");
+                return;
+            }
+            $sender->sendPopup("Run this command in-game please");
         }
       }
-      $sender->sendPopup("Run this command in-game please");
-      return;
     }
 }
